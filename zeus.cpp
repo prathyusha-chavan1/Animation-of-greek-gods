@@ -1,6 +1,13 @@
 #include<glut.h>
 #include<stdio.h>
 #include<math.h>
+
+#include<iostream>
+using namespace std;
+
+float bottomx = 650, bottomy1 = 790, bottomy2 = 790;
+bool flag = true;
+int cl,el;
 void drawCloud(int, int, int, int, int, int, int, double);
 float scale = 0.5,width,height;
 const float DEG2RAD = 3.14159 / 180;
@@ -8,13 +15,14 @@ const float DEG2RAD = 3.14159 / 180;
 void myinit() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0, 2000, 0, 1200);
+	gluOrtho2D(0, 1920, 0, 1080);
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_NORMALIZE);
 	glPointSize(5);
 	glLineWidth(2);
-	glScalef(0.5, 0.5, 0.5);
-	glTranslatef(100, 400, 0);
+	//glTranslatef(500, 200, 0);
+	//glScalef(0.5, 0.5, 0.5);
+	
 }
 
 void drawCircleFilled(double centerX, double centerY, double radiusX, double radiusY)
@@ -26,13 +34,11 @@ void drawCircleFilled(double centerX, double centerY, double radiusX, double rad
 		float degInRad = i * DEG2RAD;
 		glVertex2d(centerX + cos(degInRad) * radiusX,
 			centerY + sin(degInRad) * radiusY);
-
 	}
-
 	glEnd();
 	glFlush();
 }
-void drawline()
+void drawmouth()
 {
 	glColor3f(0, 0, 0);
 	/*glBegin(GL_LINES);
@@ -49,9 +55,6 @@ void drawline()
 		glVertex2f(x2, y2);
 	}
 	glEnd();
-
-
-
 }
 void drawface()
 {
@@ -61,7 +64,6 @@ void drawface()
 	glVertex2i(255, 430);
 	glVertex2i(385, 430);
 	glVertex2i(415, 330);
-
 	glEnd();
 	glFlush();
 }
@@ -96,24 +98,78 @@ void drawCloud(int xx, int yy, int p, int q, int r, int u, int v, double a)
 	drawCircleFilled(x - u, y + v, r, r);
 }
 
-void display() {
-	float hx = 25,x1 = hx + 150, y1 = 190, x2, y2;
-	float angle, radius = 10;
-	glClearColor(0, 0, 0, 1);
-	glClear(GL_COLOR_BUFFER_BIT);
+void drawcloud() {
+	float angle,n=6, x1, x2, y1, y2;
+	glColor3f(0, 0, 0);
+	glBegin(GL_POLYGON);
 
+	for (angle = 1.0; angle < 361.0; angle += 0.2)
+	{
+		x2 = 320 + sin(angle) * 120;
+		y2 = 650 + cos(angle) * 80;
+		glVertex2f(x2, y2);
+	}
+	glEnd();
+
+	for (float i = 1; i <= 8; i++) {
+		x1 = 320 + 120 * sin((i * 360 / n) * DEG2RAD);
+		y1 = 650 + 80 * cos((i * 360 / n) * DEG2RAD);
+		glBegin(GL_POLYGON);
+		for (angle = 1.0f; angle < 361.0f; angle += 0.2)
+		{
+			x2 = x1 + sin(angle) * 30;
+			y2 = y1 + cos(angle) * 30;
+			glVertex2f(x2, y2);
+		}
+		glEnd();
+	}
+	glFlush();
+}
+
+void drawlightning() {
+	glColor3f(1, 1, 0);
+	time(&current_time);
+	cl = clock();
+	
+	
+	if (flag) {
+		el = cl + 5000;
+		flag = false;
+		cout << cl;
+	}
+	if (bottomx > 600) {
+		if (cl - el <= 5000) {
+			el += 5000;
+			bottomx--;
+			bottomy1 -= 10;
+			bottomy2 -= 10;
+		}
+	}
+	
+	glBegin(GL_POLYGON);
+	glVertex2f(600, 800);
+	glVertex2f(650, 800);
+	glVertex2f(bottomx, bottomy1);
+	glVertex2f(600, bottomy2);
+	glEnd();
+	glFlush();
+}
+
+void drawzeus() {
+	float hx = 25, x1 = hx + 150, y1 = 190, x2, y2;
+	float angle, radius = 10;
 	//thunderbolt
 	glColor3f(1, 1, 0);
 	glBegin(GL_POLYGON);
-		glVertex2f(hx + 100 , 300);
-		glVertex2f(hx + 120 , 200);
-		glVertex2f(hx + 135 , 220);
+	glVertex2f(hx + 100, 300);
+	glVertex2f(hx + 120, 200);
+	glVertex2f(hx + 135, 220);
 	glEnd();
 
 	glBegin(GL_POLYGON);
-		glVertex2f(hx + 170, 100);
-		glVertex2f(hx + 150, 250);
-		glVertex2f(hx + 130, 230);
+	glVertex2f(hx + 170, 100);
+	glVertex2f(hx + 150, 250);
+	glVertex2f(hx + 130, 230);
 	glEnd();
 
 	//left hand
@@ -128,10 +184,10 @@ void display() {
 	glEnd();
 
 	glBegin(GL_POLYGON);
-		glVertex2f(hx + 150, 195);
-		glVertex2f(hx + 210, 250);
-		glVertex2f(hx + 220, 240);
-		glVertex2f(hx + 160, 190);
+	glVertex2f(hx + 150, 195);
+	glVertex2f(hx + 210, 250);
+	glVertex2f(hx + 220, 240);
+	glVertex2f(hx + 160, 190);
 	glEnd();
 
 	//right robe flap
@@ -166,22 +222,22 @@ void display() {
 	//robe lower
 	glColor3f(0.85, 0.85, 0.85);
 	glBegin(GL_POLYGON);
-		glVertex2f(210, 130);
-		glVertex2f(240, 190);
-		glVertex2f(245, 185);
-		glVertex2f(215, 125);
+	glVertex2f(210, 130);
+	glVertex2f(240, 190);
+	glVertex2f(245, 185);
+	glVertex2f(215, 125);
 	glEnd();
-	
+
 	glColor3f(0.8, 0.8, 0.8);
 	glBegin(GL_TRIANGLE_FAN);
-		glVertex2f(245, 185);
-		glVertex2f(207, 110);
-		glColor3f(0.5, 0.5, 0.5);
-		glVertex2f(242, 90);
-		glColor3f(0.2, 0.2, 0.2);
-		glVertex2f(243, 120);
+	glVertex2f(245, 185);
+	glVertex2f(207, 110);
+	glColor3f(0.5, 0.5, 0.5);
+	glVertex2f(242, 90);
+	glColor3f(0.2, 0.2, 0.2);
+	glVertex2f(243, 120);
 	glEnd();
-	
+
 	glColor3f(0.9, 0.9, 0.9);
 	glBegin(GL_POLYGON);
 	glVertex2f(245, 185);
@@ -244,12 +300,12 @@ void display() {
 	glVertex2f(355, 240);
 	glEnd();
 
-	glBegin(GL_TRIANGLE_FAN);	
-	glColor3f(0.4, 0.4, 0.4);	
+	glBegin(GL_TRIANGLE_FAN);
+	glColor3f(0.4, 0.4, 0.4);
 	glVertex2f(388, 75);
-	glVertex2f(393, 77);	
+	glVertex2f(393, 77);
 	glColor3f(0.6, 0.6, 0.6);
-	glVertex2f(398, 80);	
+	glVertex2f(398, 80);
 	glColor3f(0.8, 0.8, 0.8);
 	glVertex2f(385, 185);
 	glVertex2f(330, 135);
@@ -285,9 +341,9 @@ void display() {
 	int n = 16;
 	//zpratz
 	//zhair
-	glColor3f(0.65, 0.65, 0.65);
+	glColor3f(0.55, 0.55, 0.55);
 	glBegin(GL_POLYGON);
-	
+
 	for (angle = 1.0; angle < 361.0; angle += 0.2)
 	{
 		x2 = 320 + sin(angle) * 120;
@@ -295,7 +351,7 @@ void display() {
 		glVertex2f(x2, y2);
 	}
 	glEnd();
-	
+
 	for (float i = 1; i <= n; i++) {
 		x1 = 320 + 110 * sin((i * 360 / n) * DEG2RAD);
 		y1 = 350 + 120 * cos((i * 360 / n) * DEG2RAD);
@@ -322,7 +378,7 @@ void display() {
 	}
 	glEnd();
 
-	for (float i = 1; i <= n/2 -1; i++) {
+	for (float i = 1; i <= n / 2 - 1; i++) {
 		//printf("%f\n",(i * 360 / n));
 		x1 = 320 + 80 * sin((90 + i * 360 / n) * DEG2RAD);
 		y1 = 330 + 95 * cos((90 + i * 360 / n) * DEG2RAD);
@@ -364,8 +420,17 @@ void display() {
 		glVertex2f(x2, y2);
 	}
 	glEnd();
-	drawline();
+	drawmouth();
 	glFlush();
+}
+
+void display() {
+	
+	glClearColor(0.6, 0.6, 0.9, 1);
+	glClear(GL_COLOR_BUFFER_BIT);
+	drawzeus();
+	//drawcloud();
+	drawlightning();
 }
 
 //void reshape(int w, int h) {
@@ -394,15 +459,23 @@ void reshape(int width, int height)
 
 }
 
+void idle() {
+	//glutPostRedisplay();
+	//glutDisplayFunc(display);
+	drawlightning();
+}
+
 void main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
-	glutInitWindowPosition(100, 50);
-	glutInitWindowSize(1000, 600);
+	glutInitWindowPosition(0, 0);
+	glutInitWindowSize(1920, 1080);
 	glutCreateWindow("Zues");
 	myinit();
 	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
+	glutFullScreen();
+	glutIdleFunc(idle);
+	//glutReshapeFunc(reshape);
 	glutMainLoop();
 }
 
