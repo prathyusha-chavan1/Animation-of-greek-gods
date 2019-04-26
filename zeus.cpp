@@ -1,13 +1,16 @@
 #include<glut.h>
 #include<stdio.h>
 #include<math.h>
-
 #include<iostream>
+
 using namespace std;
 
-float bottomx = 650, bottomy1 = 790, bottomy2 = 790;
-bool flag = true;
-int cl,el;
+int switchs = 1;
+float bottomx1 = 600, bottomx2 = 650, bottomy1 = 790, bottomy2 = 790;
+float bottomx11 = 600, bottomx21 = 600, bottomy11 = 550, bottomy21 = 490;
+float bottomx12= 760, bottomx22 = 710, bottomy12=582, bottomy22=572;
+bool flag = true,flag2 = true,flag3 = true;
+
 void drawCloud(int, int, int, int, int, int, int, double);
 float scale = 0.5,width,height;
 const float DEG2RAD = 3.14159 / 180;
@@ -26,8 +29,7 @@ void myinit() {
 }
 
 void drawCircleFilled(double centerX, double centerY, double radiusX, double radiusY)
-{
-	
+{	
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex2d(centerX, centerY);
 	for (int i = -1; i < 360; i++) {
@@ -67,20 +69,6 @@ void drawface()
 	glEnd();
 	glFlush();
 }
-
-
-//void display()
-//{
-//	glClear(GL_COLOR_BUFFER_BIT);
-//	glClearColor(1, 1, 1, 0);
-//
-//	// clear display window
-//
-//
-//	glColor3f(1, 0, 0);
-//
-//
-//}
 
 void drawCloud(int xx, int yy, int p, int q, int r, int u, int v, double a)
 {
@@ -126,33 +114,81 @@ void drawcloud() {
 	glFlush();
 }
 
-void drawlightning() {
+void thirdln() {
+	//glScalef(0.5, 0.5, 1);
 	glColor3f(1, 1, 0);
-	time(&current_time);
-	cl = clock();
-	
-	
-	if (flag) {
-		el = cl + 5000;
-		flag = false;
-		cout << cl;
-	}
-	if (bottomx > 600) {
-		if (cl - el <= 5000) {
-			el += 5000;
-			bottomx--;
-			bottomy1 -= 10;
-			bottomy2 -= 10;
+	if (switchs == 3) {
+		if (flag3)
+			flag3 = false;
+		if (bottomx22 < bottomx12) {
+			bottomx12 -= 4;
+			bottomx22 -= 2;
+			bottomy12 -= 20;
+			bottomy22 -= 20;
 		}
+
+		glBegin(GL_POLYGON);
+		glVertex2f(710, 572);
+		glVertex2f(760, 582);
+		glVertex2f(bottomx12, bottomy12);
+		glVertex2f(bottomx22, bottomy22);
+		glEnd();
+		glFlush();
+		glLoadIdentity();
 	}
+}
+
+void secondln(){
+	//glScalef(0.5, 0.5, 1);
+	glColor3f(1, 1, 0);
+	if (switchs == 2) {		
+		if (flag2) 		
+			flag2 = false;
+
+		if (bottomx11 < 750) {
+			bottomx11 += 10;
+			bottomx21 += 10;
+			bottomy11 += 2;
+			bottomy21 += 4;
+		}
+		else 
+			switchs = 3;
+		
+		glBegin(GL_POLYGON);
+		glVertex2f(600, 490);
+		glVertex2f(600, 550);
+		glVertex2f(bottomx11, bottomy11);
+		glVertex2f(bottomx21, bottomy21);
+		glEnd();
+		//thirdln();
+		glFlush();		
+		//glLoadIdentity();
+	}
+}
+
+void drawlightning() {
+	//glScalef(0.5, 0.5, 1);
+	glColor3f(1, 1, 0);
+	
+	if (flag) 
+		flag = false;
+	
+	if (bottomx2 > 625) {
+		bottomx2--;
+		bottomy1 -= 10;
+		bottomy2 -= 10;
+	}
+	else 
+		switchs = 2;
 	
 	glBegin(GL_POLYGON);
 	glVertex2f(600, 800);
 	glVertex2f(650, 800);
-	glVertex2f(bottomx, bottomy1);
+	glVertex2f(bottomx2, bottomy1);
 	glVertex2f(600, bottomy2);
 	glEnd();
-	glFlush();
+	glFlush();	
+	//glLoadIdentity();
 }
 
 void drawzeus() {
@@ -429,8 +465,12 @@ void display() {
 	glClearColor(0.6, 0.6, 0.9, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	drawzeus();
-	//drawcloud();
+	glScalef(0.5, 0.5, 1);
+	glTranslatef(400, 400, 0);
 	drawlightning();
+	secondln();
+	thirdln();	
+	glLoadIdentity();
 }
 
 //void reshape(int w, int h) {
@@ -460,9 +500,12 @@ void reshape(int width, int height)
 }
 
 void idle() {
-	//glutPostRedisplay();
-	//glutDisplayFunc(display);
+	glScalef(0.5, 0.5, 1);
+	glTranslatef(400, 400, 0);
 	drawlightning();
+	secondln();
+	thirdln();
+	glLoadIdentity();
 }
 
 void main(int argc, char** argv) {
@@ -478,6 +521,3 @@ void main(int argc, char** argv) {
 	//glutReshapeFunc(reshape);
 	glutMainLoop();
 }
-
-
-
