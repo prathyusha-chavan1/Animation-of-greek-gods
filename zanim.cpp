@@ -2,19 +2,18 @@
 #include<stdio.h>
 #include<math.h>
 #include<ctime>
-
 #include<iostream>
 using namespace std;
 int switchs = 1;
 float bottomx1 = 600, bottomx2 = 650, bottomy1 = 790, bottomy2 = 790;
 float bottomx11 = 600, bottomx21 = 600, bottomy11 = 550, bottomy21 = 490;
 float bottomx12 = 760, bottomx22 = 710, bottomy12 = 582, bottomy22 = 572;
-bool flag = true, flag2 = true, flag3 = true, f1 = false, f2 = false;
+bool notdone = true,flag = true, flag2 = true, flag3 = true, f1 = false, f2 = false;
 float ypos = 10, c5 = 0.1,C4 = 0.1, hy = 0, hx1 = 0;
 GLfloat alpha = 1;
 float scale = 0.5, width, height;
 const float DEG2RAD = 3.14159 / 180;
-int ctr = 1,pages=1;
+int ctr = 0,pages=1;
 
 void reset_ln() {
 	switchs = 1;
@@ -23,8 +22,8 @@ void reset_ln() {
 	bottomx11 = 600, bottomx21 = 600, bottomy11 = 550, bottomy21 = 490;
 	bottomx12 = 760, bottomx22 = 710, bottomy12 = 582, bottomy22 = 572;
 
-	if (ctr == 7)
-		ctr = 1;
+	if (ctr == 15)
+		ctr = 0;
 }
 
 void myinit() {
@@ -47,10 +46,10 @@ void drawCircleFilled(double centerX, double centerY, double radiusX, double rad
 {
 
 	glBegin(GL_TRIANGLE_FAN);
-	glVertex2d(centerX, centerY);
+	glVertex2f(centerX, centerY);
 	for (int i = -1; i < 360; i++) {
 		float degInRad = i * DEG2RAD;
-		glVertex2d(centerX + cos(degInRad) * radiusX,
+		glVertex2f(centerX + cos(degInRad) * radiusX,
 			centerY + sin(degInRad) * radiusY);
 	}
 	glEnd();
@@ -74,10 +73,10 @@ void drawface()
 {
 	glColor3f(0.96, 0.80, 0.69);
 	glBegin(GL_POLYGON);
-	glVertex2i(225, 330);
-	glVertex2i(255, 430);
-	glVertex2i(385, 430);
-	glVertex2i(415, 330);
+	glVertex2f(225, 330);
+	glVertex2f(255, 430);
+	glVertex2f(385, 430);
+	glVertex2f(415, 330);
 	glEnd();
 	glFlush();
 }
@@ -202,7 +201,7 @@ void update(int)
 {
 
 	glutPostRedisplay();
-	glutTimerFunc(1000/60, update, 0);
+	glutTimerFunc(1000 / 60, update, 0);
 	if (pages == 2) {
 		if (ypos < 600)
 			ypos += 10;
@@ -234,18 +233,19 @@ void drawbox1()
 
 void myMouseFunc(int button, int state, int x, int y)
 {
-	cout << x << endl << y;
+
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && (x >= 580 && x <= 850) && (y >= 480 && y <= 810)) {
 
 		f2 = true;
 		pages = 2;
-		glutTimerFunc(0, update, 0);
-		
+		if (notdone) {
+			glutTimerFunc(0, update, 0);
+			notdone = false;
+		}
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && (x >= 1439 && x <= 1495) && (y >= 798 && y <= 822)) {
 		pages = 1;
 		resetpage2();
-
 		
 	}
 }
@@ -307,7 +307,8 @@ void drawfaceh()
 
 
 void drawzeus() {
-	glTranslated(615, 0, 0);
+	glScalef(0.85, 0.85, 1);
+	glTranslated(800, 400, 0);
 	float hx = 25, x1 = hx + 150, y1 = 190, x2, y2;
 	float angle, radius = 10;
 	//thunderbolt
@@ -519,7 +520,7 @@ void drawzeus() {
 	//zface
 	drawface();
 	//zbeard
-	glColor3f(0.5, 0.5, 0.5);
+	glColor3f(0.45, 0.45, 0.45);
 	glBegin(GL_POLYGON);
 
 	for (angle = 90; angle < 270; angle += 0.2)
@@ -579,81 +580,418 @@ void drawzeus() {
 	glFlush();
 }
 
+void drawpos()
+{
+	glScalef(0.85, 0.85, 1);
+	glTranslated(1420, 300, 0);
+	float hx = 25, x1 = hx + 150, y1 = 190, x2, y2;
+	float angle, radius = 10;
+	//trident
+	glColor3f(0.917, 0.717, 0.223);
+	glBegin(GL_POLYGON);
+	glVertex2f(170 + 17, 70);
+	glVertex2f(180 + 17, 70);
+	glVertex2f(130 + 17, 310);
+	glVertex2f(120 + 17, 310);
+	glEnd();
+
+	glColor3f(0.403, 0.313, 0.094);
+	glBegin(GL_POLYGON);
+	glVertex2f(130 + 17, 310);
+	glVertex2f(120 + 17, 310);
+	glVertex2f(123 + 17, 295);
+	glVertex2f(133 + 17, 295);
+	glEnd();
+
+	glColor3f(0.917, 0.717, 0.223);
+	glBegin(GL_POLYGON);
+	glVertex2f(120 + 17, 305);
+	glVertex2f(95 + 17, 305);
+	glVertex2f(95 + 17, 310);
+	glVertex2f(120 + 17, 310);
+	glEnd();
+
+
+
+	glBegin(GL_POLYGON);
+	glVertex2f(130 + 17, 305);
+	glVertex2f(152 + 17, 305);
+	glVertex2f(152 + 17, 310);
+	glVertex2f(130 + 17, 310);
+	glEnd();
+
+
+
+	glBegin(GL_POLYGON);
+	glVertex2f(95 + 17, 305);
+	glVertex2f(100 + 17, 305);
+	glVertex2f(95 + 17, 327);
+	glVertex2f(90 + 17, 327);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex2f(150 + 17, 305);
+	glVertex2f(155 + 17, 305);
+	glVertex2f(150 + 17, 330);
+	glVertex2f(145 + 17, 330);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex2f(120 + 19, 309);
+	glVertex2f(127 + 19, 309);
+	glVertex2f(122 + 19, 337);
+	glVertex2f(115 + 19, 337);
+	glEnd();
+
+
+	glBegin(GL_TRIANGLES);
+	glVertex2f(141 + 17, 330);
+	glVertex2f(145 + 17, 345);
+	glVertex2f(155 + 17, 330);
+	glEnd();
+
+
+	glBegin(GL_TRIANGLES);
+	glVertex2f(87 + 17, 326);
+	glVertex2f(90 + 17, 342);
+	glVertex2f(100 + 17, 326);
+	glEnd();
+
+	glBegin(GL_TRIANGLES);
+	glVertex2f(131, 336);
+	glVertex2f(135, 352);
+	glVertex2f(144, 336);
+	glEnd();
+	
+	//left hand
+	glColor3f(0.96, 0.80, 0.69);
+	glBegin(GL_POLYGON);
+	for (angle = 1.0f; angle < 361.0f; angle += 0.2)
+	{
+		x2 = (x1 - hx1) + sin(angle) * radius;
+		y2 = (y1 + hy) + cos(angle) * radius;
+		glVertex2f(x2, y2);
+	}
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex2f(hx + 150 - hx1, 195 + hy);
+	glVertex2f(hx + 210, 250);
+	glVertex2f(hx + 220, 240);
+	glVertex2f(hx + 160 - hx1, 190 + hy);
+	glEnd();
+
+	//right robe flap
+	glColor3f(0.180, 0.376, 0.937);
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex2f(387, 237);
+	glVertex2f(370, 90);
+	glColor3f(0.5, 0.5, 0.5);
+	glVertex2f(385, 92);
+	glColor3f(0.3, 0.3, 0.3);
+	glVertex2f(420, 95);
+	glEnd();
+
+	//right hand
+	glColor3f(0.96, 0.80, 0.69);
+	glBegin(GL_POLYGON);
+	glVertex2f(395, 240);
+	glVertex2f(405, 240);
+	glVertex2f(417, 160);
+	glVertex2f(405, 160);
+	glVertex2f(405, 200);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	for (angle = 1.0f; angle < 361.0f; angle += 0.2)
+	{
+		x2 = 405 + sin(angle) * 12;
+		y2 = 160 + cos(angle) * 12;
+		glVertex2f(x2, y2);
+	}
+	glEnd();
+	//robe lower
+	glColor3f(0.180, 0.376, 0.937);
+	glBegin(GL_POLYGON);
+	glVertex2f(210, 130);
+	glVertex2f(240, 190);
+	glVertex2f(245, 185);
+	glVertex2f(215, 125);
+	glEnd();
+
+	glColor3f(0.180, 0.376, 0.937);
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex2f(245, 185);
+	glVertex2f(207, 110);
+	glColor3f(0.086, 0.286, 0.435);
+	glVertex2f(242, 90);
+	glColor3f(0.050, 0.176, 0.270);
+	glVertex2f(243, 120);
+	glEnd();
+
+	glColor3f(0.486, 0.721, 0.894);
+	glBegin(GL_POLYGON);
+	glVertex2f(245, 185);
+	glVertex2f(237, 70);
+	glVertex2f(265, 65);
+	glVertex2f(310, 75);
+	glVertex2f(365, 65);
+	glVertex2f(390, 70);
+	glVertex2f(382, 185);
+	glEnd();
+
+	//shading
+	glColor3f(0.180, 0.376, 0.937);
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex2f(245, 185);
+	glVertex2f(237, 70);
+	glColor3f(0.486, 0.721, 0.894);
+	glVertex2f(265, 65);
+	glColor3f(0.647, 0.890, 0.952);
+	glVertex2f(278, 100);
+
+	glVertex2f(300, 200);
+	glEnd();
+
+	//waist left
+	glColor3f(0.96, 0.80, 0.69);
+	glBegin(GL_POLYGON);
+	glVertex2f(239, 220);
+	glVertex2f(240, 190);
+	glVertex2f(245, 185);
+	glVertex2f(260, 184);
+	glVertex2f(245, 240);
+	glEnd();
+
+	//left crease
+	glColor3f(0.086, 0.317, 0.372);
+	glBegin(GL_POLYGON);
+	glVertex2f(300, 165);
+	glVertex2f(265, 65);
+	glVertex2f(295, 70);
+	glEnd();
+
+	//right crease
+	glColor3f(0.086, 0.317, 0.372);
+	glBegin(GL_POLYGON);
+	glVertex2f(320, 155);
+	glVertex2f(325, 70);
+	glVertex2f(355, 65);
+	glEnd();
+
+	//robe upper
+	glColor3f(0.221, 0.454, 0.698);
+	glBegin(GL_POLYGON);
+	glVertex2f(245, 238);
+	glVertex2f(260, 184);
+	glVertex2f(265, 170);
+	glVertex2f(300, 145);
+	glVertex2f(330, 135);
+	glVertex2f(385, 185);
+	glVertex2f(355, 240);
+	glEnd();
+
+	glBegin(GL_TRIANGLE_FAN);
+	glColor3f(0.221, 0.521, 0.698);
+	glVertex2f(388, 75);
+	glVertex2f(393, 77);
+	glColor3f(0.243, 0.682, 0.878);
+	glVertex2f(398, 80);
+	glColor3f(0.221, 0.454, 0.698);
+	glVertex2f(385, 185);
+	glVertex2f(330, 135);
+	glEnd();
+
+	//waist right
+	glColor3f(0.96, 0.80, 0.69);
+	glBegin(GL_POLYGON);
+	glVertex2f(355, 240);
+	glVertex2f(385, 185);
+	glVertex2f(390, 240);
+	//glVertex2f(390, 77);
+	glEnd();
+
+	//mid left crease
+	glColor3f(0.086, 0.317, 0.372);
+	glBegin(GL_POLYGON);
+	glVertex2f(280, 215);
+	glVertex2f(288, 200);
+	glVertex2f(320, 155);
+	glVertex2f(360, 135);
+	glVertex2f(330, 170);
+	glEnd();
+
+	//mid right crease
+	glColor3f(0.086, 0.317, 0.372);
+	glBegin(GL_POLYGON);
+	glVertex2f(310, 215);
+	glVertex2f(330, 190);
+	glVertex2f(360, 160);
+	glVertex2f(348, 190);
+	glEnd();
+	int n = 16;
+	//zpratz
+	//zhair
+	glColor3f(0.250, 0.262, 0.388);
+	glBegin(GL_POLYGON);
+
+	for (angle = 1.0; angle < 361.0; angle += 0.2)
+	{
+		x2 = 320 + sin(angle) * 120;
+		y2 = 350 + cos(angle) * 130;
+		glVertex2f(x2, y2);
+	}
+	glEnd();
+
+	for (float i = 1; i <= n; i++) {
+		x1 = 320 + 110 * sin((i * 360 / n) * DEG2RAD);
+		y1 = 350 + 120 * cos((i * 360 / n) * DEG2RAD);
+		glBegin(GL_POLYGON);
+		for (angle = 1.0f; angle < 361.0f; angle += 0.2)
+		{
+			x2 = x1 + sin(angle) * 25;
+			y2 = y1 + cos(angle) * 25;
+			glVertex2f(x2, y2);
+		}
+		glEnd();
+	}
+	//zface
+	drawfaceh();
+
+	glColor3f(0.250, 0.262, 0.388);
+	//cover face
+	glBegin(GL_POLYGON);
+	glVertex2f(225, 450);
+	glVertex2f(250, 420);
+	glVertex2f(390, 420);
+	glVertex2f(415, 450);
+	glEnd();
+
+	//zbeard
+	glColor3f(0.192, 0.196, 0.247);
+	glBegin(GL_POLYGON);
+
+	for (angle = 90; angle < 270; angle += 0.2)
+	{
+		x2 = 320 + sin(angle * DEG2RAD) * 96;
+		y2 = 330 + cos(angle * DEG2RAD) * 70;
+		glVertex2f(x2, y2);
+	}
+	glEnd();
+
+	for (float i = 1; i <= n / 2 - 1; i++) {
+		//printf("%f\n",(i * 360 / n));
+		x1 = 320 + 75 * sin((90 + i * 360 / n) * DEG2RAD);
+		y1 = 320 + 80 * cos((90 + i * 360 / n) * DEG2RAD);
+		//glVertex2f(x1, y1);
+		glBegin(GL_POLYGON);
+		for (angle = 1.0f; angle < 361.0f; angle += 0.2)
+		{
+			x2 = x1 + sin(angle) * 35;
+			y2 = y1 + cos(angle) * 35;
+			glVertex2f(x2, y2);
+		}
+		glEnd();
+	}
+	//zeyes
+	glColor3f(0, 0, 0);
+	glBegin(GL_POLYGON);
+	for (angle = 1.0; angle < 361.0; angle += 0.2)
+	{
+		x2 = 280 + cos(angle) * 10;
+		y2 = 350 + sin(angle) * 10;
+		glVertex2f(x2, y2);
+	}
+	glEnd();
+	glBegin(GL_POLYGON);
+	for (angle = 1.0; angle < 361.0; angle += 0.2)
+	{
+		x2 = 355 + cos(angle) * 10;
+		y2 = 350 + sin(angle) * 10;
+		glVertex2f(x2, y2);
+	}
+	glEnd();
+
+	//zmouth
+	glColor3f(0.96, 0.80, 0.69);
+	glBegin(GL_POLYGON);
+	for (angle = 1.0; angle < 361.0; angle += 0.2)
+	{
+		x2 = 317 + cos(angle * DEG2RAD) * 30;
+		y2 = 295 + sin(angle * DEG2RAD) * 20;
+		glVertex2f(x2, y2);
+	}
+
+	glEnd();
+	drawmouth();
+
+	glLoadIdentity();
+	glFlush();
+}
+
 void drawhades()
 {
-	glTranslated(215, 0, 0);
+	glScalef(0.85, 0.85, 1);
+	glTranslatef(200, 300, 0);
 	float hx = 25, x1 = hx + 150, y1 = 190, x2, y2;
 	float angle, radius = 10;
 
 	glColor3f(0.65, 0.65, 0.65);
 	glBegin(GL_POLYGON);
-	glVertex2d(170 + 17, 70);
-	glVertex2d(180 + 17, 70);
-	glVertex2d(130 + 17, 310);
-	glVertex2d(120 + 17, 310);
+	glVertex2f(170 + 17, 70);
+	glVertex2f(180 + 17, 70);
+	glVertex2f(130 + 17, 310);
+	glVertex2f(120 + 17, 310);
 	glEnd();
 
 	glColor3f(1, 0, 0);
 	glBegin(GL_POLYGON);
-	glVertex2d(130 + 17, 310);
-	glVertex2d(120 + 17, 310);
-	glVertex2d(123 + 17, 295);
-	glVertex2d(133 + 17, 295);
+	glVertex2f(130 + 17, 310);
+	glVertex2f(120 + 17, 310);
+	glVertex2f(123 + 17, 295);
+	glVertex2f(133 + 17, 295);
 	glEnd();
 
 	glColor3f(0.3, 0.3, 0.3);
 	glBegin(GL_POLYGON);
-	glVertex2d(120 + 17, 305);
-	glVertex2d(95 + 17, 305);
-	glVertex2d(95 + 17, 310);
-	glVertex2d(120 + 17, 310);
+	glVertex2f(120 + 17, 305);
+	glVertex2f(95 + 17, 305);
+	glVertex2f(95 + 17, 310);
+	glVertex2f(120 + 17, 310);
 	glEnd();
-
 
 	glBegin(GL_POLYGON);
-	glVertex2d(130 + 17, 305);
-	glVertex2d(152 + 17, 305);
-	glVertex2d(152 + 17, 310);
-	glVertex2d(130 + 17, 310);
+	glVertex2f(130 + 17, 305);
+	glVertex2f(152 + 17, 305);
+	glVertex2f(152 + 17, 310);
+	glVertex2f(130 + 17, 310);
 	glEnd();
-
-
 
 	glBegin(GL_POLYGON);
-	glVertex2d(95 + 17, 305);
-	glVertex2d(100 + 17, 305);
-	glVertex2d(95 + 17, 327);
-	glVertex2d(90 + 17, 327);
+	glVertex2f(95 + 17, 305);
+	glVertex2f(100 + 17, 305);
+	glVertex2f(95 + 17, 327);
+	glVertex2f(90 + 17, 327);
 	glEnd();
-
-
 
 	glBegin(GL_POLYGON);
-	glVertex2d(155 + 17, 305);
-	glVertex2d(150 + 17, 305);
-	glVertex2d(145 + 17, 330);
-	glVertex2d(150 + 17, 330);
+	glVertex2f(155 + 17, 305);
+	glVertex2f(150 + 17, 305);
+	glVertex2f(145 + 17, 330);
+	glVertex2f(150 + 17, 330);
 	glEnd();
-
 
 	glBegin(GL_TRIANGLES);
-	glVertex2d(141 + 17, 330);
-	glVertex2d(145 + 17, 345);
-	glVertex2d(155 + 17, 330);
+	glVertex2f(141 + 17, 330);
+	glVertex2f(145 + 17, 345);
+	glVertex2f(155 + 17, 330);
 	glEnd();
-
 
 	glBegin(GL_TRIANGLES);
-	glVertex2d(87 + 17, 326);
-	glVertex2d(90 + 17, 342);
-	glVertex2d(100 + 17, 326);
+	glVertex2f(87 + 17, 326);
+	glVertex2f(90 + 17, 342);
+	glVertex2f(100 + 17, 326);
 	glEnd();
-
-
-
-
-
-
 
 	//left hand
 	glColor3f(0.96, 0.80, 0.69);
@@ -928,7 +1266,7 @@ void drawcirc(float x, float y, float z)
 {
 	glTranslatef(x, y, z);
 	float angle, x2, y2;
-	glColor3f(1, 1, 1);
+	//glColor3f(1, 1, 1);
 	glBegin(GL_POLYGON);
 	for (angle = 1.0; angle < 361.0; angle += 0.2)
 	{
@@ -944,14 +1282,17 @@ void display() {
 	if (pages == 1) {
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			float v1, v2;
 			v1 = rand() % 1920;
 			v2 = rand() % 1080;
+			glColor3f(1,1,1);
 			drawcirc(-250 + v1, -300 + v2, 0);
 		}
+		glutPostRedisplay();
 		drawzeus();
+		drawpos();
 		drawhades();
 		glutSwapBuffers();
 		glFlush();
@@ -960,9 +1301,12 @@ void display() {
 		glClearColor(0.567320 - c5, 0.806536 - c5, 0.906536 - c5, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
 		drawgrass();
+		glScalef(1.1, 1.1, 1);
+		glTranslatef(-90, -300, 0);
 		drawzeus();
+		glLoadIdentity();
 		drawbox1();
-		if (f1 == true && ctr % 2 == 0)
+		if (f1 == true && ctr % 5 == 0)
 		{
 			glScalef(1, 0.75, 0.75);
 			glTranslatef(-100, 270, 0);
