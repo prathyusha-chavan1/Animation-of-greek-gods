@@ -15,7 +15,62 @@ float ypos = 10, c5 = 0.1, C4 = 0.1, hy = 0, hx1 = 0;
 GLfloat alpha = 1;
 float scale = 0.5, width, height;
 const float DEG2RAD = 3.14159 / 180;
-int ctr = 0, pages = 1;
+int ctr = 0, pages = 0;
+int strflag = 0;
+
+void fdrawstring(float x, float y, float z, const char* str)
+{
+	unsigned int c;
+	glRasterPos3f(x, y, z);
+	for (c = 0; c < strlen(str); c++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[c]);
+}
+
+void fdrawstring1(float x, float y, float z, const char* str)
+{
+	unsigned int c;
+	glRasterPos3f(x, y, z);
+	if (strflag == 0)
+		for (c = 0; c < strlen(str); c++)
+			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[c]);
+	if (strflag == 1)
+		for (c = 0; c < strlen(str); c++)
+			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[c]);
+	if (strflag == 2)
+		for (c = 0; c < strlen(str); c++)
+			glutBitmapCharacter(GLUT_BITMAP_9_BY_15, str[c]);
+}
+
+void frontscreen()
+{
+	glClearColor(1, 1, 1, 1);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(0, 0, 1);
+	fdrawstring(-15, 40, 0.0, "RNS INSTITUTE OF TECHNOLOGY");
+	glColor3f(0.7, 0, 1);
+	fdrawstring(-25, 35, 0.0, "DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING");
+	glColor3f(1, 0.5, 0);
+	fdrawstring(-10, 30, 0.0, "A MINI PROJECT ON ");
+	glColor3f(1, 0, 0);
+	fdrawstring(-13, 20, 0.0, "ANIMATION OF GREEK GODS");
+	glColor3f(1, 0.5, 0);
+	fdrawstring(-30, 0, 0.0, "BY:");
+	glColor3f(0.5, 0, 0.5);
+	fdrawstring(-30, -10, 0.0, "PRANAV SRIVATSA (1RN16CS070)");
+	fdrawstring(-30, -14, 0.0, "PRATHYUSHA C S (1RN16CS073)");
+	strflag = 0;
+	fdrawstring(-30, -18, 0.0, "6th Semester,CSE");
+	glColor3f(1, 0.5, 0);
+	fdrawstring(15, 0, 0.0, "GUIDE:");
+	glColor3f(0.5, 0.2, 0.2);
+	fdrawstring(15, -10, 0.0, "MAMATHA JAJUR S");
+	strflag = 0;
+	fdrawstring(15, -14, 0.0, "Assistant Professor,CSE");
+	glColor3f(1, 0.1, 1);
+	fdrawstring(-13, -35, 0.0, "CLICK ANYWHERE TO START");
+	glutSwapBuffers();
+	glFlush();
+}
 
 //resets lightning to begin from within the clouds
 void reset_ln() {
@@ -99,33 +154,6 @@ void drawfacehades()
 	glEnd();
 }
 
-void drawcloud() {
-	float angle, n = 6, x1, x2, y1, y2;
-	glColor3f(0, 0, 0);
-	glBegin(GL_POLYGON);
-
-	for (angle = 1.0; angle < 361.0; angle += 0.2)
-	{
-		x2 = 320 + sin(angle) * 120;
-		y2 = 650 + cos(angle) * 80;
-		glVertex2f(x2, y2);
-	}
-	glEnd();
-
-	for (float i = 1; i <= 8; i++) {
-		x1 = 320 + 120 * sin((i * 360 / n) * DEG2RAD);
-		y1 = 650 + 80 * cos((i * 360 / n) * DEG2RAD);
-		glBegin(GL_POLYGON);
-		for (angle = 1.0f; angle < 361.0f; angle += 0.2)
-		{
-			x2 = x1 + sin(angle) * 30;
-			y2 = y1 + cos(angle) * 30;
-			glVertex2f(x2, y2);
-		}
-		glEnd();
-	}
-	glFlush();
-}
 
 //draws the bottom section of the lightning bolt
 void thirdln() {
@@ -234,29 +262,21 @@ void update(int)
 	}
 }
 
-void drawbox1()
-{
-	glColor3f(1, 0, 0);
-	glBegin(GL_POLYGON);
-	glVertex2f(1800, 50);
-	glVertex2f(1870, 50);
-	glVertex2f(1870, 80);
-	glVertex2f(1800, 80);
-	glEnd();
-	glFlush();
-}
-
 void myMouseFunc(int button, int state, int x, int y)
 {
-	cout << x << endl << y;
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && (x >= 590 && x <= 857) && (y >= 272 && y <= 548)) {
 
-		f2 = true;
+	if (pages == 1 && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && (x >= 590 && x <= 857) && (y >= 272 && y <= 548)) {
+
+		f2 = true;		
 		pages = 2;
 		if (notdone) {
 			glutTimerFunc(0, update, 0);
 			notdone = false;
 		}
+	}
+	if (pages == 0 && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		pages = 1;
+
 	}
 	if (pages == 1 && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && (x >= 1418 && x <= 1498) && (y >= 770 && y <= 829)) {
 			exit(0);
@@ -266,11 +286,11 @@ void myMouseFunc(int button, int state, int x, int y)
 		pages = 1;
 		resetpage2();
 	}
+	
 }
 
 void drawclouds(int x3, int y3, float s1, float s2)
 {
-
 	float hx = 25, x1 = hx + 150, y1 = 190, x2, y2;
 	float angle, radius = 10;
 
@@ -1259,11 +1279,13 @@ void drawgrass()
 	glEnd();
 	glFlush();
 }
+
+
 void drawcirc(float x, float y, float z, int r)
 {
 	glTranslatef(x, y, z);
 	float angle, x2, y2;
-	//glColor3f(1, 1, 1);
+
 	glBegin(GL_POLYGON);
 	for (angle = 1.0; angle < 361.0; angle += 0.2)
 	{
@@ -1330,6 +1352,19 @@ void bignamedrawString(float x, float y, float z, char* string)
 }
 
 void display() {
+	if (pages == 0) {
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(-60, 60, -60, 60, -60, 60);
+		//glMatrixMode(GL_MODELVIEW);
+				
+		frontscreen();
+
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluOrtho2D(0, 1920, 0, 1080);
+		glMatrixMode(GL_MODELVIEW);
+	}
 	if (pages == 1) {
 		glClearColor(0, 0, 0, 0);
 
